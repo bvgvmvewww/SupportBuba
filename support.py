@@ -2,21 +2,6 @@ import logging
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 
-import os
-from flask import Flask
-from waitress import serve
-
-app = Flask(__name__)
-
-@app.route('/')
-def home():
-    return "Hello, Render!"
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    serve(app, host='0.0.0.0', port=port)
-
-
 # Укажите ваш токен бота и Telegram ID администратора
 TOKEN = "7525904539:AAHzE_r-B8Eqs2TYjVZP0_GfpLsscV0pwKk"
 ADMIN_ID = 5084880209  # Замените на ваш Telegram ID
