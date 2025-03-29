@@ -1,22 +1,8 @@
 import logging
-import os
+import asyncio
 from telegram import Update, ReplyKeyboardMarkup, KeyboardButton
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
-
-import threading
-from flask import Flask
-
-app_flask = Flask(__name__)
-
-@app_flask.route('/')
-def home():
-    return "I'm alive!"
-
-def run_flask():
-    app_flask.run(host="0.0.0.0", port=8080)
-
-threading.Thread(target=run_flask, daemon=True).start()
-
+from flask import Flask, request, jsonify
 
 # Укажите ваш токен бота и Telegram ID администратора
 TOKEN = "7525904539:AAHzE_r-B8Eqs2TYjVZP0_GfpLsscV0pwKk"
@@ -24,6 +10,9 @@ ADMIN_ID = 5084880209  # Замените на ваш Telegram ID
 
 # Включаем логирование
 logging.basicConfig(level=logging.INFO)
+
+# Flask приложение
+app = Flask(__name__)
 
 # Клавиатура для отзывов
 keyboard = ReplyKeyboardMarkup(
@@ -55,7 +44,7 @@ async def handle_feedback(update: Update, context: CallbackContext):
     await update.message.reply_text("Спасибо за ваш отзыв! Нам важно ваше мнение.")
 
 # Главная функция для запуска бота
-def main():
+async def main():
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
@@ -63,9 +52,16 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_feedback))
 
     print("Бот запущен...")
-    app.run_polling()
+    await app.run_polling()
+
+# Flask маршрут для запуска бота
+@app.route('/start', methods=['GET'])
+def start_flask():
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(main())
+    return jsonify({"message": "Bot started!"})
 
 if __name__ == "__main__":
-    main()
-
+    app.run(debug=True)
 
