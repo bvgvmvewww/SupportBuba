@@ -2,14 +2,6 @@ import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext, CallbackQueryHandler
 
-)
-
-# Определяем состояния диалога
-CHOOSING, WAITING_RESUME = range(2)
-
-# Настройка логирования
-logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
-
 # Укажите ваш токен бота и Telegram ID администратора
 TOKEN = "7525904539:AAHzE_r-B8Eqs2TYjVZP0_GfpLsscV0pwKk"
 ADMIN_ID = 5084880209  # Замените на ваш Telegram ID
