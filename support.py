@@ -27,7 +27,7 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rating_text = update.message.text
     if user_id in user_reviews and "⭐" in rating_text:
         user_reviews[user_id]["rating"] = int(rating_text.replace("⭐", "").strip())
-        await update.message.reply_text("Спасибо! Теперь напишите ваш отзыв или отправьте фото/видео/документ.", reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text("Спасибо! Теперь напишите ваш отзыв или отправьте фото.", reply_markup=ReplyKeyboardRemove())
 
 async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
