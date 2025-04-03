@@ -3,10 +3,10 @@ from flask import Flask
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route("/")
 def home():
-    return "Бот работает!"
+    return "Приложение работает!"
 
-if __name__ == "__master__":
-    port = int(os.environ.get("PORT", 10000))  # Render автоматически назначает порт
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))  # Получаем порт из окружения
     app.run(host="0.0.0.0", port=port)
