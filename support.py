@@ -1,7 +1,5 @@
 from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
-from flask import Flask, request
-import os
 
 TOKEN = "7525904539:AAHzE_r-B8Eqs2TYjVZP0_GfpLsscV0pwKk"
 ADMIN_CHAT_ID = "5084880209"
@@ -9,10 +7,6 @@ ADMIN_CHAT_ID = "5084880209"
 # Хранение отзывов
 user_reviews = {}
 
-# Flask app для Webhook
-app = Flask(__name__)
-
-# Основной код бота
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[KeyboardButton("⭐ Оставить отзыв")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
@@ -33,7 +27,7 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rating_text = update.message.text
     if user_id in user_reviews and "⭐" in rating_text:
         user_reviews[user_id]["rating"] = int(rating_text.replace("⭐", "").strip())
-        await update.message.reply_text("Спасибо! Теперь напишите ваш отзыв или отправьте фото/видео/документ.", reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text("Спасибо! Теперь напишите ваш отзыв или отправьте фото.", reply_markup=ReplyKeyboardRemove())
 
 async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
@@ -44,7 +38,7 @@ async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Разделяем медиа и текст
     review_text = update.message.caption if update.message.caption else update.message.text
 
-    if review_text:  # Если есть текст (подпись к фото или обычное сообщение)
+    if review_text:  # Если есть текст (подпись к фото/видео или обычное сообщение)
         user_reviews[user_id]["text"] = review_text
         review_message = (
             f"🆔 ID: {user_id}\n"
@@ -69,33 +63,17 @@ async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text("Если захотите оставить еще один отзыв, нажмите кнопку ниже.", reply_markup=reply_markup)
 
-# Flask роут для Webhook
-@app.route(f'/{TOKEN}', methods=['POST'])
-def webhook():
-    json_str = request.get_data().decode('UTF-8')
-    update = Update.de_json(json_str, app.bot)
-    app.update_queue.put(update)
-    return 'ok'
-
 def main():
-    application = Application.builder().token(TOKEN).build()
-
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.Regex("⭐ Оставить отзыв"), handle_review_request))
-    application.add_handler(MessageHandler(filters.Regex("^⭐ [1-5]$"), handle_rating))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_review))
-    application.add_handler(MessageHandler(filters.PHOTO, handle_review))
-    application.add_handler(MessageHandler(filters.Document(), handle_review))
-    application.add_handler(MessageHandler(filters.VIDEO, handle_review))
-
-    # Устанавливаем webhook
-    application.bot.set_webhook(f'https://supportbuba.onrender.com')
-
-    print("Бот запущен с Webhook...")
-    
-    # Запуск Flask сервера
-    app.run(host='0.0.0.0', port=5000)
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(MessageHandler(filters.Regex("⭐ Оставить отзыв"), handle_review_request))
+    app.add_handler(MessageHandler(filters.Regex("^⭐ [1-5]$"), handle_rating))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_review))
+    app.add_handler(MessageHandler(filters.PHOTO, handle_review))
+    app.add_handler(MessageHandler(filters.Document(), handle_review))
+    app.add_handler(MessageHandler(filters.VIDEO, handle_review))
+    print("Бот запущен...")
+    app.run_polling()
 
 if __name__ == "__main__":
     main()
-
