@@ -10,7 +10,11 @@ user_reviews = {}
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[KeyboardButton("⭐ Оставить отзыв")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    await update.message.reply_text("Привет! Вы можете оставить отзыв, нажав на кнопку ниже.", reply_markup=reply_markup)
+    await update.message.reply_text("Привет, это Буба!/n
+
+Очень рад, что вы заглянули к нам за драниками./n
+Если есть минутка — расскажите, как всё прошло?/n
+Каждый ваш отзыв помогает сделать наши драники ещё вкуснее./n", reply_markup=reply_markup)
 
 async def handle_review_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
@@ -27,12 +31,14 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
     rating_text = update.message.text
     if user_id in user_reviews and "⭐" in rating_text:
         user_reviews[user_id]["rating"] = int(rating_text.replace("⭐", "").strip())
-        await update.message.reply_text("Спасибо! Теперь напишите ваш отзыв или отправьте фото.", reply_markup=ReplyKeyboardRemove())
+        await update.message.reply_text("Спасибо за оценку! А теперь — пару слов?/n
+Расскажите, что понравилось (или что стоит подкрутить)./n
+Можно просто текст, а можно фото — я всё внимательно прочитаю!./n", reply_markup=ReplyKeyboardRemove())
 
 async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     if user_id not in user_reviews or user_reviews[user_id]["rating"] is None:
-        await update.message.reply_text("Сначала выберите количество звезд!")
+        await update.message.reply_text("Пожалуйста, укажите количество звезд!")
         return
 
     # Разделяем медиа и текст
@@ -58,7 +64,9 @@ async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_video(chat_id=ADMIN_CHAT_ID, video=update.message.video.file_id)
 
     del user_reviews[user_id]  # Чистим данные
-    await update.message.reply_text("Спасибо за ваш отзыв! 😊")
+    await update.message.reply_text("Спасибо за отзыв!/n
+Буба всё прочитал👍/n
+Каждый ваш отзыв помогает нам становиться вкуснее и лучше. Ждем в гости снова! 💫/n")
     keyboard = [[KeyboardButton("⭐ Оставить отзыв")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text("Если захотите оставить еще один отзыв, нажмите кнопку ниже.", reply_markup=reply_markup)
