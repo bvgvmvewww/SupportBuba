@@ -11,9 +11,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[KeyboardButton("⭐ Оставить отзыв")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text("Привет, это Буба!\n"
-"Очень рад, что вы заглянули к нам за драниками.\n"
-"Если есть минутка — расскажите, как всё прошло?\n"
-"Каждый ваш отзыв помогает сделать наши драники ещё вкуснее.", reply_markup=reply_markup)
+    "Очень рад, что вы заглянули к нам за драниками.\n"
+    "Если есть минутка — расскажите, как всё прошло?\n"
+    "Каждый ваш отзыв помогает сделать наши драники ещё вкуснее.", reply_markup=reply_markup)
 
 async def handle_review_request(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
@@ -31,9 +31,9 @@ async def handle_rating(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user_id in user_reviews and "⭐" in rating_text:
         user_reviews[user_id]["rating"] = int(rating_text.replace("⭐", "").strip())
         await update.message.reply_text("Спасибо за оценку!\n"
-"А теперь — пару слов?\n"
-"Расскажите, что понравилось (или что стоит подкрутить).\n"
-"Можно просто текст, а можно фото — я всё внимательно прочитаю!.", reply_markup=ReplyKeyboardRemove())
+        "А теперь — пару слов?\n"
+        "Расскажите, что понравилось (или что стоит подкрутить).\n"
+        "Можно просто текст, а можно фото — я всё внимательно прочитаю!.", reply_markup=ReplyKeyboardRemove())
 
 async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
@@ -65,8 +65,8 @@ async def handle_review(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     del user_reviews[user_id]  # Чистим данные
     await update.message.reply_text("Спасибо за отзыв!\n"
-"Буба всё прочитал👍\n"
-"Каждый ваш отзыв помогает нам становиться вкуснее и лучше. Ждем в гости снова! 💫"
+    "Буба всё прочитал👍\n"
+    "Каждый ваш отзыв помогает нам становиться вкуснее и лучше. Ждем в гости снова! 💫"
     keyboard = [[KeyboardButton("⭐ Оставить отзыв")]]
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text("Если захотите оставить еще один отзыв, нажмите кнопку ниже.", reply_markup=reply_markup)
