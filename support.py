@@ -2,7 +2,7 @@ from telegram import Update, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardR
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
 TOKEN = "7525904539:AAHzE_r-B8Eqs2TYjVZP0_GfpLsscV0pwKk"
-ADMIN_CHAT_ID = "5084880209"
+ADMIN_CHAT_ID = "7771818476"
 
 # Хранение отзывов
 user_reviews = {}
